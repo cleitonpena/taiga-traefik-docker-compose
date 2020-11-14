@@ -1,13 +1,5 @@
 version: '3'
 
-# networks is required because of OpenVPN Client problem
-networks:
-  default:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 172.177.57.0/24
-
 volumes:
   vol_traefik: {}
   vol_taiga_rabbit_data: {}
