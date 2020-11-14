@@ -10,110 +10,11 @@ networks:
 
 volumes:
   vol_traefik: {}
-  vol_gogs_db_data: {}
-  vol_gogs_data: {}
-  vol_drone_db_data: {}
-  vol_drone_data: {}
-  vol_odoo_data: {}
-  vol_odoo_db_data: {}
   vol_taiga_rabbit_data: {}
   vol_taiga_db_data: {}
   vol_taiga_back_media: {}
 
 services:
-
-  gogs_db:
-    env_file: .env
-    restart: always
-    image: postgres:latest
-    ports:
-      - 5432
-    volumes:
-      - vol_gogs_db_data:/var/lib/postgresql/data/
-
-  gogs:
-    env_file: .env
-    restart: always
-    image: gogs/gogs:latest
-    depends_on:
-      - gogs_db
-    ports:
-      - "0.0.0.0:3333:2222"
-    expose:
-      - ${GOGS_PORT}
-    volumes:
-      - vol_gogs_data:/data
-    labels:
-      - traefik.enable=true
-      - traefik.port=${GOGS_PORT}
-      - traefik.backend.domain=${GOGS_DOMAIN}
-      - traefik.frontend.rule=Host:${GOGS_DOMAIN}
-
-  drone_db:
-    env_file: .env
-    restart: always
-    image: postgres:latest
-    ports:
-      - 5432
-    volumes:
-      - vol_drone_db_data:/var/lib/postgresql/data/
-
-  drone:
-    env_file: .env
-    restart: always
-    image: drone/drone:latest
-    depends_on:
-      - drone_db
-      - gogs
-    expose:
-      - ${DRONE_PORT}
-    environment:
-      - DRONE_GOGS_SERVER=http://gogs:${GOGS_PORT}
-    volumes:
-      - vol_drone_data:/var/lib/drone
-    labels:
-      - traefik.enable=true
-      - traefik.backend.domain=${DRONE_SERVER_HOST}
-      - traefik.frontend.rule=Host:${DRONE_SERVER_HOST}
-
-  drone_runner:
-    env_file: .env
-    restart: always
-    image: drone/drone-runner-docker:latest
-    depends_on:
-      - drone
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-
-  odoo_db:
-    env_file: .env
-    restart: always
-    image: postgres:latest
-    ports:
-      - 5432
-    environment:
-      - POSTGRES_DB=postgres
-    volumes:
-      - vol_odoo_db_data:/var/lib/postgresql/data/
-
-  odoo:
-    image: odoo:latest
-    depends_on:
-      - odoo_db
-    expose:
-      - ${ODOO_PORT}
-    environment:
-      - HOST=odoo_db
-      - USER=$POSTGRES_USER
-      - PASSWORD=$POSTGRES_PASSWORD
-    volumes:
-      - vol_odoo_data:/var/lib/odoo
-      # - ./config:/etc/odoo
-      # - ./addons:/mnt/extra-addons
-    labels:
-      - traefik.enable=true
-      - traefik.backend.domain=${ODOO_HOST}
-      - traefik.frontend.rule=Host:${ODOO_HOST}
 
   taiga_rabbit:
     env_file: .env
@@ -139,7 +40,7 @@ services:
     build:
       context: taiga/back
       args:
-        TAIGA_VERSION: $TAIGA_VERSION
+        TAIGA_BACK_VERSION: $TAIGA_BACK_VERSION
     command: gunicorn -b 0.0.0.0:${TAIGA_BACK_PORT} taiga.wsgi
     expose:
       - ${TAIGA_BACK_PORT}
@@ -184,7 +85,7 @@ services:
       context: taiga/front
       args:
         TAIGA_SCHEME: $TAIGA_SCHEME
-        TAIGA_VERSION: $TAIGA_VERSION
+        TAIGA_FRONT_VERSION: $TAIGA_FRONT_VERSION
         TAIGA_BACK_HOST: $TAIGA_BACK_HOST
         TAIGA_EVENTS_HOST: $TAIGA_EVENTS_HOST
         TAIGA_EVENTS_SCHEME: $TAIGA_EVENTS_SCHEME
@@ -208,5 +109,4 @@ services:
     ports:
       - 80:80
       - 443:443
-      - 2222:2222
       - 8080:8080
