@@ -1,13 +1,13 @@
 FROM python:3.7-alpine
 
-ARG TAIGA_VERSION
+ARG TAIGA_BACK_VERSION
 
 WORKDIR /srv/taiga
 
 RUN apk add --no-cache postgresql-libs libxslt-dev libxml2-dev  libjpeg jpeg-dev \
     && apk add --no-cache --virtual build-deps git gcc python3-dev musl-dev libffi-dev postgresql-dev g++ libjpeg-turbo-dev  \
     && mkdir logs \
-    && git clone --depth=1 -b $TAIGA_VERSION https://github.com/taigaio/taiga-back.git back \
+    && git clone --depth=1 -b $TAIGA_BACK_VERSION https://github.com/taigaio/taiga-back.git back \
     && cd back \
     && pip3 install --no-cache-dir -r requirements.txt \
     && pip3 install --no-cache-dir whitenoise django-jet \
