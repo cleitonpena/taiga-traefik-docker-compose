@@ -5,7 +5,7 @@
     "eventsHeartbeatIntervalTime": 15000,
     "debug": true,
     "debugInfo": false,
-    "defaultLanguage": "en",
+    "defaultLanguage": "pt-br",
     "publicRegisterEnabled": true,
     "gravatar": true,
     "feedbackEnabled": false,
