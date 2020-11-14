@@ -42,7 +42,9 @@ EVENTS_PUSH_BACKEND_OPTIONS = {
     "url": f"amqp://guest:guest@{RABBIT_HOST}:5672/{RABBIT_VHOST}"}
 
 PUBLIC_REGISTER_ENABLED = False
-MIDDLEWARE_CLASSES = ['whitenoise.middleware.WhiteNoiseMiddleware'] + MIDDLEWARE_CLASSES
+MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware'
+    ] + MIDDLEWARE
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 INSTALLED_APPS = [
