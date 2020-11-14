@@ -1,4 +1,4 @@
-logLevel = "INFO"
+# logLevel = "INFO"
 defaultEntryPoints = ["http"]
 
 [retry]
@@ -7,11 +7,11 @@ defaultEntryPoints = ["http"]
 exposedByDefault = false
 
 
-[Global]
-debug = false
+# [Global]
+# debug = false
 
 [log]
-level = "INFO"
+# level = "INFO"
 
 [accessLog]
 # format = "json"
